@@ -105,7 +105,7 @@ ggsave(p, file= "plot_smr.png", dpi=300, width=6.89, height=4.88)
 ## Exercícios
 
 Vamos acessar agora outros gráficos do Br em Dados, e tentar replicar.
-Vamos ler o código primeiro, e entender o que estásendo feito
+Vamos ler o código primeiro, e entender o que está sendo feito
 E então vamos replicar.
 Dica: Para instalar o pacote ipeaData, vamos usar o pacote devtools.
 Ele permite instalar um pacote direto do github.
@@ -115,7 +115,7 @@ Nesse caso, o pacote ipeaData não está disponível para o R 3.5.0
 # library(devtools)
 # install_github("ipea/ipeaData")
 library(ipeaData)
-? ipeadata
+#?ipeadata
 ```
 
 
@@ -125,4 +125,5 @@ library(ipeaData)
 
 3. Defasagem escolar:  https://github.com/brdados/graficos/blob/master/defasagem_escolar.R
 
+4.Pobreza extrema: https://github.com/brdados/graficos/blob/master/pobreza_extrema_regiao.R
 
