@@ -638,6 +638,14 @@ xlab e ylab alteram o nome das variáveis x e y. E ggtitle altera o título do g
 ``` 
 indica quebra de linha.
 
+E seu eu quiser mudar outras coisa,s podemos usar um tema do ggplot. Por exemplo:
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+#library(ggplot)
+fifa2018_1  %>%
+  filter(position == "FW") %>%
+  ggplot(aes(goals, height)) + geom_point() + geom_smooth(method="lm") + theme_bw() + xlab("Gols feitos") + ylab("Altura em cm") + ggtitle("Associação entre gols marcados por atacantes \n e altura dos jogadores das seleções de futebol", subtitle="Dados oficiais da Fifa")
+```
 Com essa introdução a como operar com R, podemos agora mexer em dados mais úteis para análises de políticas públicas com R do que os dados da Fifa.
 
 Abra o guia da segunda parte da aula aqui:
