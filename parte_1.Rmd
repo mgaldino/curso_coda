@@ -15,8 +15,8 @@ Essa é o tutorial para o curso de R para análise de políticas públicas. Ao l
     4. Exportar bancos de dados;
     5. Juntar diferentes bancos de dados com o left_join;
     6. Aprender a fazer gráficos com ggplot2
-    6. Trabalhar problemas do mundo real na parte 2;
-    7. Aprender a usar as funções gather() e spread() do tidyr.
+    7. Trabalhar problemas do mundo real na parte 2;
+    8. Aprender a usar as funções gather() e spread() do tidyr.
 
 
 ## Primeiros passos
@@ -140,7 +140,7 @@ Agora nós temos acesso ao comando *fread* e podemos importar o nosso banco de d
 É uma prática comum indicar as bibliotecas que serão usadas no início do script, no entanto, a longo do curso de hoje faremos um pouco diferente: sempre que utilizarmos um comando que pertence a uma biblioteca, vamos mostrar a biblioteca como um comentário. Vejam o exemplo a seguir (por favor, não rodem):
 
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 #library(data.table) ou
 #data.table:fread
 idh <- fread(file = "idh.csv")
@@ -193,7 +193,7 @@ Algumas colunas estão corretamente classificadas como character(texto), mas out
 
 Você poderá perceber que o código descrito no canto inferior direito irá se modificar conforme você vai alterando a classe das colunas. Após alterar a classe dessas três colunas, copie o código e clique em *import* . Por fim, cole o código no seu script para registro. Ele estará parecido com o código abaixo:
 
-```{r, eval=FALSE, warning=FALSE, message=FALSE}
+```{r, eval=TRUE, warning=FALSE, message=FALSE}
 # Carregando a biblioteca readxl
 library(readxl)
 # Importando o dataframe e atribuindo ao objeto fifa2018
@@ -216,7 +216,7 @@ Durante o curso de hoje, vamos aprender a analisar dados utilizando os verbos do
 
 Primeiro vamos instalar e carregar a biblioteca:
 
-```{r, eval=FALSE, message=FALSE, warning=FALSE}
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
 # install.packages("dplyr")
 # Esse pacote já foi instalado no computador.
 library(dplyr)
@@ -351,7 +351,7 @@ glimpse(fifa2018_1)
 
 Agora, ficar repetindo o comando (mutate) é muito chato. Lembrem-se: **programadores são preguiçosos**. No dplyr, você pode dizer o comando uma vez e colocar tudo o que diz respeito àquele comando dentro do parenteses. Então o nosso código ficaria assim:
 
-```{r, eval=FALSE, message=FALSE, warning=FALSE}
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
 fifa2018_1 <- fifa2018 %>%  
   mutate(esporte = "futebol",
          media_gols = round(goals/caps , 1),
@@ -567,5 +567,77 @@ Por fim, vamos fazer um exercício em sala para fixar os conteúdos: Vamos compa
     4. Ordene em ordem decrescente por número de gols com o arrange(desc()).
     5. Abra  o seu novo objeto com o View()
 
-Chega de brincar de copa. Vamos para o mundo real?
-Abra o guia da seguinda parte da aula aqui:
+
+## 6. Gráficos com ggplot2
+
+Uma das fortalezas do R é a parte de visualização gráfica, especialmente como pacote ggplot2. Vamos fazer uns gráficos?
+
+O ggplot2 é muito poderoso. Vamos começar entendedo como ele funciona.
+Digamos que eu quero fazer um gráfico simples entre altura e gols. A sintaxe começa assim:
+
+```{r, eval=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+# ggplot(banco_de_dados, aes(x, y))
+```
+
+No nosso caso, ficaria:
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+library(ggplot2)
+ggplot(fifa2018_1, aes(goals, height))
+```
+
+
+Um plot vazio é renderizado. Nós especificamos o que são x e y, não temos pontos, nem retas. Para o ggplot, se você não especificar qual é o formato do gráfico (pontos, linhas, barras etc.), ele não saberá o que você quer renderizar. Eu apenas falei qual banco usar, e quais variáveis são ser o x e y.
+
+E a função aes() é usada para especificar os eixos x e y.
+
+Para plotar pontos (por exemplo), preciso dizer que essa é a geometria que eu quero.
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+#library(ggplot2)
+ggplot(fifa2018_1, aes(goals, height)) + geom_point()
+```
+
+Agora temos um gráfico plotado. Cada ponto representa um jogador (altura e gools marcados). Muitas coisas podem ser customizadas nesse gráfico, como o nome das variáveis, nome do título de plot, cor de background, tamanho das fontes etc.
+
+E temos muitas outras geometrias possíveis: geom_bar para gráfico de barra, geom_line para gráfico de linha e assim por diante.
+
+De todo modo, vocês concordam que não há correlação entre altura e gols? Vamos traçar uma linha reta associado as duas variáveis, para visuzalizar melhor?
+
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+#library(ggplot2)
+ggplot(fifa2018_1, aes(goals, height)) + geom_point() +geom_smooth(method="lm")
+```
+
+Eu usei uma nova geometria, de alizamento (smooth), que plota um ajuste aos dados. No caso, um modelo liear (por isso method = "lm", de linear model). Vejam quea correlação estimada é levemente negativa, mas ele também plotou um "intervalo de confiança", e aí vemos que a correlação é próxima de zero. Se você quiser o plot sem os intervalos, basta colocar "se=FALSE" dentro de geom_smooth (separado por vírgula, pois é outro argumento) para remover os intervalos. De todo modo, será que se olharmos só para atacantes, a associação muda?
+
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+#library(ggplot)
+fifa2018_1  %>%
+  filter(position == "FW") %>%
+  ggplot(aes(goals, height)) + geom_point() + geom_smooth(method="lm")
+```
+
+Vejam que usei o filter para filtrar e, com o pipe, não precisei especificar qual o banco de dados. Ficou claro que só olhando para atacante, não tem correlaçção nenhuma.
+
+Vamos só deixar o gráfico mais bonito? Vamos mudar os nomes das variáveiss e adicionar um título ao gráfico?
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+#library(ggplot)
+fifa2018_1  %>%
+  filter(position == "FW") %>%
+  ggplot(aes(goals, height)) + geom_point() + geom_smooth(method="lm") + xlab("Gols feitos") + ylab("Altura em cm") + ggtitle("Associação entre gols marcados por atacantes \n e altura dos jogadores das seleções de futebol", subtitle="Dados oficiais da Fifa")
+```
+
+xlab e ylab alteram o nome das variáveis x e y. E ggtitle altera o título do gráfico (e subtítulo). O 
+```{r, eval=FALSE, message=FALSE, warning=FALSE}
+"\n"
+``` 
+indica quebra de linha.
+
+Com essa introdução a como operar com R, podemos agora mexer em dados mais úteis para análises de políticas públicas com R do que os dados da Fifa.
+
+Abra o guia da segunda parte da aula aqui:
