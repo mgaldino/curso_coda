@@ -7,7 +7,9 @@ output: html_document
 
 ## Início
 
-Essa é o tutorial para o curso de R para análise de políticas públicas. Ao longo do dia iremos:
+Essa é o tutorial para o curso de R para análise de políticas públicas.
+A oficina prática ensinará como utilizar o software R para fazer análises estatísticas e manuseio de microdados de políticas públicas. Iremos aprender a importar dados simples e as principais bases de dados de microdados do Brasil, e fazer análises básicas delas. Ao final da oficina, o participante saberá as principais funções para usar o R em análises de políticas públicas.
+Ao longo do dia iremos:
 
     1. Conhecer o R;
     2. Importar planilhas em formatos .xlsx (Excel) e .csv no R;
@@ -15,8 +17,7 @@ Essa é o tutorial para o curso de R para análise de políticas públicas. Ao l
     4. Exportar bancos de dados;
     5. Juntar diferentes bancos de dados com o left_join;
     6. Aprender a fazer gráficos com ggplot2
-    7. Trabalhar problemas do mundo real na parte 2;
-    8. Aprender a usar as funções gather() e spread() do tidyr.
+    7. Trabalhar problemas do mundo real na parte 2 e conhecer algumas bases de dados mais relevantes (microdados).
 
 
 ## Primeiros passos
