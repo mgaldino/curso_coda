@@ -1,0 +1,128 @@
+---
+title: "Aula Coda - parte 2"
+author: "Manoel"
+date: "11 de novembro de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Analisandos dados - replicando Br em dados
+
+Eu sou um dos integrantes do grupo  Brasil em dados, que durante as eleições fez uma série de gráficos sobre o país. Vamos aqui replicar alguns deles, para vocês terem uma ideia de como esse tipo de análise é feita.
+
+Na url: https://github.com/brdados/graficos temos todos os gráficos feitos pelo Br em dados. Não dá para fazer tudo, até pela complexidade de alguns, mas podemos brincar com os mais fáceis.
+
+Um doos gráficos mais compartilhados foi o do salário mínimo. Vamos replicar ele? Acessem https://github.com/brdados/graficos/blob/master/Grafico_salario_minimo.R
+Lá tem o script final para o gráfico. Como iremos devagar, sigam o scritp da aula.
+
+## GRAFICO SALARIO MÍNIMO ##
+
+Vamos carregar algumas bibliotecas (instalem se vocês não tiverem ela instaladas)
+```{r, eval=TRUE, warning=F, message=F}
+library(ggplot2)
+library(data.table)
+library(dplyr)
+library(tidyr)
+library(scales)
+```
+
+Para deixar o gráfico no formato correto, vamos usar o tema que o pessoal criou:
+
+```{r, eval=TRUE, warning=F, message=F, echo=F}
+tema_br_dados <- function (tam.fonte = 16, fonte = "sans", angle.x = 360, leg_pos = "bottom"){
+  
+  theme_minimal(base_size = 16, base_family = fonte) + 
+    theme(axis.text = element_text(color = "black"),
+          legend.text = element_text(),
+          legend.position = "top",
+          plot.subtitle = element_text(size = 14),
+          plot.title = element_text(size = 18, face = "bold"),
+          panel.grid = element_blank(),
+          panel.grid.major.y = element_line(color = "gray90"),
+          axis.line.x = element_line()
+    )
+}
+
+```
+
+Em vez de usarmos theme_bw(), por exemplo, usaremos tema_br_dados()
+
+Os dados de salário mínimo são do IPEA (https://goo.gl/96BZwC)
+Eu baixei os dados, e deu um problema quando fui importar. Então abri no excel, salvei, e agora funciona a importação.
+Baixem do meu github, em: https://github.com/mgaldino/curso_coda/blob/master/ipea_salario_minimo.csv
+
+
+```{r, eval=TRUE, warning=F, message=F, echo=F}
+dados.df <- fread("ipea_salario_minimo.csv", encoding="UTF-8")
+glimpse(dados.df)
+```
+
+Vamos processar os dados?
+
+```{r, eval=TRUE, warning=F, message=F}
+# filtrando os anos e meses que queremos
+# transformando SM que está em formato de texto, para número
+dados.df <- dados.df %>%
+  filter(ANO %in% (1958:2018), MES== 9) %>%
+  mutate(SMR = gsub(",", ".", VALVALOR),
+         SMR = as.numeric(SMR))
+```
+
+```{r, eval=TRUE, warning=F, message=F}
+# plotando o gráfico
+p <- ggplot(dados.df, aes(x=ANO, y=SMR)) + 
+  geom_line(size=1.1, alpha=0.9, colour="#00441b") +
+  geom_vline(xintercept=1964, size=0.98, colour="#8c510a", 
+             alpha=0.9, linetype="dashed") +
+  geom_vline(xintercept=1985, size=0.98, colour="#8c510a",
+             alpha=0.9, linetype="dashed") +
+  geom_vline(xintercept=1994, size=0.98, colour="#8c510a", 
+             alpha=0.9, linetype="dashed") +
+  geom_vline(xintercept=2003, size=0.98, colour="#8c510a",
+             alpha=0.9, linetype="dashed") +
+  tema_br_dados() +
+  scale_x_continuous(breaks = seq(1958, 2018, by = 5)) +
+  scale_y_continuous(labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE)) +
+  labs(color = NULL, x = NULL, y = "Salário Mínimo Real (R$)",
+       caption = "\nFonte: Ipeadata (https://goo.gl/96BZwC)",
+       title = "Salário Mínimo Real, 1958-2018",
+       subtitle = "Crescimento constante ao longo dos últimos 20 anos")
+
+p
+
+```
+
+
+Agora, salvando o gráfico
+```{r, eval=F, warning=F, message=F}
+### Exportando para formato .png
+ggsave(p, file= "plot_smr.png", dpi=300, width=6.89, height=4.88)
+```
+
+## Exercícios
+
+Vamos acessar agora outros gráficos do Br em Dados, e tentar replicar.
+Vamos ler o código primeiro, e entender o que estásendo feito
+E então vamos replicar.
+Dica: Para instalar o pacote ipeaData, vamos usar o pacote devtools.
+Ele permite instalar um pacote direto do github.
+Nesse caso, o pacote ipeaData não está disponível para o R 3.5.0
+
+```{r, eval=T, warning=F, message=F}
+# library(devtools)
+# install_github("ipea/ipeaData")
+library(ipeaData)
+? ipeadata
+```
+
+
+1. Anos de estudo https://github.com/brdados/graficos/blob/master/anos_estudo.R
+
+2. ÁguaPotável: https://github.com/brdados/graficos/blob/master/agua_potavel.R
+
+3. Defasagem escolar:  https://github.com/brdados/graficos/blob/master/defasagem_escolar.R
+
+
